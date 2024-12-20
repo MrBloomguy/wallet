@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import './Wallet.scss'
 
 import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react'
@@ -41,10 +42,6 @@ export default function Wallet(props) {
   const isLoggedIn = useMemo(() => props.accounts.length > 0, [props.accounts])
   const [advancedModeList, setAdvancedModeList] = useLocalStorage({
     key: 'dAppsAdvancedMode',
-    defaultValue: []
-  })
-  const [extensionInviteCodeModalSeenBy, setExtensionInviteCodeModalSeenBy] = useLocalStorage({
-    key: 'extensionInviteCodeModalSeenBy',
     defaultValue: []
   })
 
@@ -259,16 +256,10 @@ export default function Wallet(props) {
     const used = props.rewardsData?.rewards.extensionKey?.used
     const rewardsAccountAddr = props.rewardsData?.rewards.accountAddr
 
-    if (!key || used || rewardsAccountAddr !== account.id) return
+    if (rewardsAccountAddr !== account.id) return
 
-    const isSeen = extensionInviteCodeModalSeenBy.includes(account.id)
-
-    if (!isSeen) {
-      setExtensionInviteCodeModalSeenBy((prev) => [...prev, account.id])
-    }
-
-    showModal(<ExtensionInviteCodeModal inviteCode={key} waitForClose={!isSeen} />, {
-      disableClose: !isSeen
+    showModal(<ExtensionInviteCodeModal inviteCode={!used && key ? key : null} />, {
+      disableClose: true
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -284,8 +275,7 @@ export default function Wallet(props) {
     isClipboardGranted,
     isNoticationsGranted,
     modalHidden,
-    showModal,
-    setExtensionInviteCodeModalSeenBy
+    showModal
   ])
 
   useEffect(() => handleDisplayInitialModal(), [handleDisplayInitialModal])
