@@ -11,7 +11,7 @@ import unsupportedDApps from 'ambire-common/src/constants/unsupportedDApps'
 import PermissionsModal from 'components/Modals/PermissionsModal/PermissionsModal'
 import UnsupportedDAppsModal from 'components/Modals/UnsupportedDAppsModal/UnsupportedDAppsModal'
 import { Loading } from 'components/common'
-import ExtensionInviteCodeModal from 'components/Modals/ExtensionInviteCodeModal/ExtensionInviteCodeModal'
+import MigrationModal from 'components/Modals/MigrationModal/MigrationModal'
 import SideBar from './SideBar/SideBar'
 import TopBar from './TopBar/TopBar'
 import DappsCatalog from './DappsCatalog/DappsCatalog'
@@ -258,7 +258,7 @@ export default function Wallet(props) {
 
     if (rewardsAccountAddr !== account.id) return
 
-    showModal(<ExtensionInviteCodeModal inviteCode={!used && key ? key : null} />, {
+    showModal(<MigrationModal inviteCode={!used && key ? key : null} />, {
       disableClose: true
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps

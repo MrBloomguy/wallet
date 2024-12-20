@@ -10,7 +10,7 @@ import { useToasts } from 'hooks/toasts'
 import legendsImage from './images/legends-image.jpg'
 import legendsImage2x from './images/legends-image@2x.jpg'
 
-import styles from './ExtensionInviteCodeModal.module.scss'
+import styles from './MigrationModal.module.scss'
 
 const CAN_CLOSE_AFTER_MS = 9400
 
@@ -25,7 +25,7 @@ const CONTENT = {
   }
 }
 
-const ExtensionInviteCodeModal = ({ inviteCode, waitForClose = true }) => {
+const MigrationModal = ({ inviteCode, waitForClose = true }) => {
   const { hideModal } = useModals()
   const { addToast } = useToasts()
   const [remainingTime, setRemainingTime] = useState(CAN_CLOSE_AFTER_MS)
@@ -123,4 +123,4 @@ const ExtensionInviteCodeModal = ({ inviteCode, waitForClose = true }) => {
   )
 }
 
-export default ExtensionInviteCodeModal
+export default MigrationModal

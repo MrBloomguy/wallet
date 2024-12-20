@@ -3,7 +3,7 @@ import { DropDown } from 'components/common'
 import useLocalStorage from 'hooks/useLocalStorage'
 import DropDownItem from 'components/common/DropDown/DropDownItem/DropDownItem'
 import { useModals } from 'hooks'
-import ExtensionInviteCodeModal from 'components/Modals/ExtensionInviteCodeModal/ExtensionInviteCodeModal'
+import MigrationModal from 'components/Modals/MigrationModal/MigrationModal'
 import styles from './Links.module.scss'
 
 import { ReactComponent as QuestionMark } from './images/help.svg'
@@ -22,8 +22,8 @@ const Links = ({ extensionInviteCodeUsed, inviteCode }) => {
 
   const onOpen = useCallback(() => setLinksViewed(true), [setLinksViewed])
 
-  const openExtensionInviteCodeModal = useCallback(() => {
-    showModal(<ExtensionInviteCodeModal inviteCode={inviteCode} waitForClose={false} />)
+  const openMigrationModal = useCallback(() => {
+    showModal(<MigrationModal inviteCode={inviteCode} waitForClose={false} />)
   }, [inviteCode, showModal])
 
   return (
@@ -40,7 +40,7 @@ const Links = ({ extensionInviteCodeUsed, inviteCode }) => {
     >
       {!extensionInviteCodeUsed && (
         <DropDownItem className={styles.item}>
-          <button type="button" onClick={openExtensionInviteCodeModal} target="_blank">
+          <button type="button" onClick={openMigrationModal} target="_blank">
             <ExtensionInviteCode className={styles.itemIcon} /> Extension invitation code
           </button>
         </DropDownItem>
