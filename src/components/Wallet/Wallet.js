@@ -258,9 +258,9 @@ export default function Wallet(props) {
 
     if (rewardsAccountAddr !== account.id) return
 
-    showModal(<MigrationModal inviteCode={!used && key ? key : null} />, {
-      disableClose: true
-    })
+    // showModal(<MigrationModal inviteCode={!used && key ? key : null} />, {
+    //   disableClose: true
+    // })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     props.accounts,

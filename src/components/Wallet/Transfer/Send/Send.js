@@ -32,7 +32,6 @@ import RecipientInput from './RecipientInput/RecipientInput'
 
 import styles from './Send.module.scss'
 
-
 const ERC20 = new Interface(ERC20_ABI)
 
 const Send = ({
@@ -129,7 +128,7 @@ const Send = ({
   )
 
   const onAmountChange = (value) => {
-    if(!selectedAsset) return
+    if (!selectedAsset) return
     if (value) {
       const { decimals } = selectedAsset
       const bigNumberAmount = parseUnits(value, decimals).toHexString()
@@ -146,12 +145,65 @@ const Send = ({
     if (!bigNumberHexAmount) return
 
     try {
+      const isNativeTopUp = gasTankDetails?.isTopUp && selectedAsset.address === ZERO_ADDRESS
+
+      if (isNativeTopUp) {
+        const WETHAbi = humanizerInfo?.abis?.WETH
+
+        if (!WETHAbi) {
+          addToast('Error during top up (Wrapped Native ABI not found)', { error: true })
+          return
+        }
+        const WETHInterface = new Interface(WETHAbi)
+        const wrappedNativeAddress = selectedNetwork.nativeAsset.wrappedAddr
+
+        if (!wrappedNativeAddress) {
+          addToast('Error during top up (Wrapped Native address not found for this network)', { error: true })
+          return
+        }
+
+        const deposit = WETHInterface.encodeFunctionData('deposit')
+        const now = Date.now()
+        const wrapRequest = {
+          id: `transfer_${now}`,
+          dateAdded: new Date().valueOf(),
+          type: 'eth_sendTransaction',
+          chainId: selectedNetwork.chainId,
+          account: selectedAcc,
+          txn: {
+            to: wrappedNativeAddress,
+            value: bigNumberHexAmount,
+            data: deposit
+          },
+
+          meta: null
+        }
+        const topUpRequest = {
+          id: `transfer_${now + 1}`,
+          dateAdded: new Date().valueOf(),
+          type: 'eth_sendTransaction',
+          chainId: selectedNetwork.chainId,
+          account: selectedAcc,
+          txn: {
+            to: wrappedNativeAddress,
+            value: '0',
+            data: ERC20.encodeFunctionData('transfer', [recipientAddress, bigNumberHexAmount])
+          },
+          meta: null
+        }
+
+        addRequest(wrapRequest)
+        addRequest(topUpRequest)
+        setAmount(0)
+
+        return
+      }
+
       const txn = {
         to: selectedAsset.address,
         value: '0',
         data: ERC20.encodeFunctionData('transfer', [recipientAddress, bigNumberHexAmount])
       }
-
       if (Number(selectedAsset.address) === 0) {
         txn.to = recipientAddress
         txn.value = bigNumberHexAmount
@@ -185,7 +237,9 @@ const Send = ({
       }
 
       addRequest(req)
-      setAddress('')
+      // We shouldn't reset the recipient as it is the
+      // fee collector (relayer) during top up
+      if (!gasTankDetails.isTopUp) setAddress('')
       setAmount(0)
     } catch (e) {
       console.error(e)
@@ -335,6 +389,7 @@ const Send = ({
     uDAddress,
     disabled,
     ensAddress,
+    gasTankDetails?.isTopUp
   ])
 
   const amountLabel = (

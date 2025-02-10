@@ -1,6 +1,8 @@
 import { Interface } from 'ethers/lib/utils'
 import { token, getName } from 'lib/humanReadableTransactions'
 import { constants } from 'ethers'
+import accountPresets from 'ambire-common/src/constants/accountPresets'
+import { nativeToken } from 'ambire-common/src/services/humanReadableTransactions'
 
 const ERC20Mapping = (humanizerInfo) => {
   const iface = new Interface([
@@ -59,6 +61,43 @@ const ERC20Mapping = (humanizerInfo) => {
     [iface.getSighash('transfer')]: (txn, network, { extended }) => {
       const [to, amount] = iface.parseTransaction(txn).args
       const name = getName(humanizerInfo, to)
+      const wrappedNativeAddress = network.nativeAsset.wrappedAddr
+      const interactingWith = txn.to
+
+      // Sending to the Relayer (Top Up)
+      if (to === accountPresets.feeCollector) {
+        // Fuel Gas Tank with ERC-20
+        if (!wrappedNativeAddress || interactingWith !== wrappedNativeAddress) {
+          if (extended) {
+            return [
+              [
+                'Fuel Gas Tank with',
+                {
+                  type: 'token',
+                  ...token(humanizerInfo, txn.to, amount, true)
+                }
+              ]
+            ]
+          }
+
+          return [`Fuel Gas Tank with ${name}`]
+        }
+
+        // Fuel Gas Tank with native token
+        if (extended) {
+          return [
+            [
+              'Fuel Gas Tank with',
+              {
+                type: 'token',
+                ...nativeToken(network, amount, true)
+              }
+            ]
+          ]
+        }
+
+        return [`Fuel Gas Tank with ${nativeToken(network, amount)}`]
+      }
 
       if (extended)
         return [
