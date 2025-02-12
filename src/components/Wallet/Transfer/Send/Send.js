@@ -239,7 +239,7 @@ const Send = ({
       addRequest(req)
       // We shouldn't reset the recipient as it is the
       // fee collector (relayer) during top up
-      if (!gasTankDetails.isTopUp) setAddress('')
+      if (!gasTankDetails?.isTopUp) setAddress('')
       setAmount(0)
     } catch (e) {
       console.error(e)
