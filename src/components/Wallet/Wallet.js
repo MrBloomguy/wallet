@@ -262,7 +262,7 @@ export default function Wallet(props) {
     const used = props.rewardsData?.rewards.extensionKey?.used
     const rewardsAccountAddr = props.rewardsData?.rewards.accountAddr
 
-    if (rewardsAccountAddr !== account.id || visualEnv === 'dev' || visualEnv === 'staging') return
+    if (rewardsAccountAddr !== account.id || visualEnv === 'dev' || visualEnv === 'staging' || props.wcUri) return
 
     showModal(<MigrationModal inviteCode={!used && key ? key : null} />, {
       disableClose: true
@@ -277,6 +277,7 @@ export default function Wallet(props) {
     props.rewardsData?.rewards.extensionKey?.used,
     props.rewardsData?.rewards.accountAddr,
     props.selectedAcc,
+    props.wcUri,
     arePermissionsLoaded,
     isClipboardGranted,
     isNoticationsGranted,
