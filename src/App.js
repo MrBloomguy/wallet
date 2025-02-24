@@ -420,6 +420,7 @@ function AppInner() {
                 connect={connect}
                 disconnect={disconnect}
                 isWcConnecting={isConnecting}
+                wcUri={wcUri}
                 // needed by the gnosis plugins
                 gnosisConnect={gnosisConnect}
                 gnosisDisconnect={gnosisDisconnect}
