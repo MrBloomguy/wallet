@@ -264,9 +264,10 @@ export default function Wallet(props) {
 
     if (rewardsAccountAddr !== account.id || visualEnv === 'dev' || visualEnv === 'staging' || props.wcUri) return
 
-    showModal(<MigrationModal inviteCode={!used && key ? key : null} />, {
-      disableClose: true
-    })
+    // disabled as a quick fix to https://github.com/AmbireTech/Marketing/issues/1557
+    //showModal(<MigrationModal inviteCode={!used && key ? key : null} />, {
+    //  disableClose: true
+    //})
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     props.accounts,
